@@ -1,6 +1,6 @@
 import type { StrategyManager } from "../types/manager";
 
-const API_URL = "https://occupied-trans-hunting-everywhere.trycloudflare.com";
+const API_URL = "https://autopilotv3.onrender.com";
 const TELEGRAM_ID = "demo_telegram_user";
 
 export async function loginInvestor() {
