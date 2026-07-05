@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Investor {
+  id              Int      @id @default(autoincrement())
+  telegramId      String   @unique
+  username        String?
+  firstName       String?
+  lastName        String?
+  phone           String?
+  email           String?
+  city            String?
+  gender          String?
+  country         String?
+  onboardingState String   @default("NEW_USER")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  wallet          Wallet?
+  vault           Vault?
+  allocations     Allocation[]
+  snapshots       PortfolioSnapshot[]
+}
+
+model Wallet {
+  id          Int      @id @default(autoincrement())
+  investorId  Int      @unique
+  balance     Float    @default(5840)
+  currency    String   @default("USDT")
+  connected   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  investor    Investor @relation(fields: [investorId], references: [id])
+}
+
+model Vault {
+  id          Int      @id @default(autoincrement())
+  investorId  Int      @unique
+  balance     Float    @default(0)
+  allocated   Float    @default(0)
+  available   Float    @default(0)
+  currency    String   @default("USDT")
+  status      String   @default("INACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  investor    Investor @relation(fields: [investorId], references: [id])
+}
+
+model StrategyManager {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String
+  bio         String
+  markets     String
+  return6m    Float
+  winRate     Float
+  maxDrawdown Float
+  riskLevel   String
+  trackerUrl  String
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  allocations Allocation[]
+}
+
+model Allocation {
+  id          Int      @id @default(autoincrement())
+  investorId  Int
+  managerId   Int
+  amount      Float
+  currency    String   @default("USDT")
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  investor    Investor @relation(fields: [investorId], references: [id])
+  manager     StrategyManager @relation(fields: [managerId], references: [id])
+}
+
+model PortfolioSnapshot {
+  id          Int      @id @default(autoincrement())
+  investorId  Int
+  wallet      Float
+  vault       Float
+  allocated   Float
+  available   Float
+  todayReturn Float
+  totalReturn Float
+  currency    String   @default("USDT")
+  createdAt   DateTime @default(now())
+
+  investor    Investor @relation(fields: [investorId], references: [id])
+}
+
+model AdminSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
