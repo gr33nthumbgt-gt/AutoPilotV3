@@ -73,3 +73,39 @@ h2 {
   color: #63ffa7;
   font-weight: 900;
 }
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+input {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,.08);
+  color: white;
+  outline: none;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #2f8cff;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.secondary {
+  background: rgba(255,255,255,.12);
+  margin-left: 8px;
+}
+
+.danger {
+  background: #ff4d4d;
+}
