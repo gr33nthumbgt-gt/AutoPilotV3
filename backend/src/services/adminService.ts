@@ -8,15 +8,9 @@ export async function getAdminOverview() {
   });
 
   const vaults = await prisma.vault.findMany();
-
   const totalAum = vaults.reduce((sum, vault) => sum + vault.balance, 0);
 
-  return {
-    investors,
-    managers,
-    activeVaults,
-    totalAum,
-  };
+  return { investors, managers, activeVaults, totalAum };
 }
 
 export async function getInvestors() {
@@ -24,29 +18,81 @@ export async function getInvestors() {
     include: {
       wallet: true,
       vault: true,
-      allocations: {
-        include: { manager: true },
-      },
+      allocations: { include: { manager: true } },
     },
     orderBy: { createdAt: "desc" },
   });
 }
 
-export async function updateManager(
+export async function updateInvestor(
   id: number,
   data: {
-    name?: string;
-    category?: string;
-    bio?: string;
-    markets?: string;
-    return6m?: number;
-    winRate?: number;
-    maxDrawdown?: number;
-    riskLevel?: string;
-    trackerUrl?: string;
+    firstName?: string;
+    phone?: string;
+    email?: string;
+    city?: string;
+    gender?: string;
+    country?: string;
+    onboardingState?: string;
+  }
+) {
+  return prisma.investor.update({
+    where: { id },
+    data,
+    include: {
+      wallet: true,
+      vault: true,
+      allocations: { include: { manager: true } },
+    },
+  });
+}
+
+export async function updateInvestorWallet(id: number, balance: number) {
+  const investor = await prisma.investor.findUnique({ where: { id } });
+
+  if (!investor) throw new Error("Investor not found");
+
+  return prisma.wallet.upsert({
+    where: { investorId: id },
+    update: { balance: Number(balance) },
+    create: {
+      investorId: id,
+      balance: Number(balance),
+      currency: "USDT",
+      connected: true,
+    },
+  });
+}
+
+export async function updateInvestorVault(
+  id: number,
+  data: {
+    balance?: number;
+    allocated?: number;
+    available?: number;
     status?: string;
   }
 ) {
+  return prisma.vault.upsert({
+    where: { investorId: id },
+    update: {
+      balance: data.balance !== undefined ? Number(data.balance) : undefined,
+      allocated: data.allocated !== undefined ? Number(data.allocated) : undefined,
+      available: data.available !== undefined ? Number(data.available) : undefined,
+      status: data.status,
+    },
+    create: {
+      investorId: id,
+      balance: Number(data.balance ?? 0),
+      allocated: Number(data.allocated ?? 0),
+      available: Number(data.available ?? 0),
+      status: data.status || "INACTIVE",
+      currency: "USDT",
+    },
+  });
+}
+
+export async function updateManager(id: number, data: any) {
   return prisma.strategyManager.update({
     where: { id },
     data,
