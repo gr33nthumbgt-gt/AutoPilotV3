@@ -38,5 +38,7 @@ const adminController = __importStar(require("../controllers/adminController"));
 const router = (0, express_1.Router)();
 router.get("/overview", adminController.overview);
 router.get("/investors", adminController.investors);
-router.patch("/managers/:id", adminController.editManager);
+router.patch("/investors/:id", adminController.editInvestor);
+router.patch("/investors/:id/wallet", adminController.editInvestorWallet);
+router.patch("/investors/:id/vault", adminController.editInvestorVault);
 exports.default = router;

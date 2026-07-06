@@ -38,4 +38,7 @@ const managerController = __importStar(require("../controllers/managerController
 const router = (0, express_1.Router)();
 router.get("/", managerController.list);
 router.get("/:id", managerController.single);
+router.post("/", managerController.create);
+router.patch("/:id", managerController.update);
+router.delete("/:id", managerController.remove);
 exports.default = router;

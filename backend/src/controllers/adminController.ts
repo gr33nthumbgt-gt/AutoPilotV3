@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
+import { getAdminOverview } from "../services/adminService";
 import {
-  getAdminOverview,
   getInvestors,
   updateInvestor,
   updateInvestorWallet,
   updateInvestorVault,
-  updateManager,
-} from "../services/adminService";
+} from "../services/adminInvestorService";
 
 export async function overview(_: Request, res: Response) {
   try {
@@ -45,13 +44,5 @@ export async function editInvestorVault(req: Request, res: Response) {
     res.json(await updateInvestorVault(Number(req.params.id), req.body));
   } catch (error: any) {
     res.status(500).json({ message: "Failed to update vault", error: error.message });
-  }
-}
-
-export async function editManager(req: Request, res: Response) {
-  try {
-    res.json(await updateManager(Number(req.params.id), req.body));
-  } catch (error: any) {
-    res.status(500).json({ message: "Failed to update manager", error: error.message });
   }
 }
