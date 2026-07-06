@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "https://autopilotv3.onrender.com";
 
 export async function getAdminOverview() {
   const response = await fetch(`${API_URL}/api/admin/overview`);
