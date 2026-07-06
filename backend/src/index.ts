@@ -9,6 +9,7 @@ import vaultRoutes from "./routes/vaultRoutes";
 import managerRoutes from "./routes/managerRoutes";
 import portfolioRoutes from "./routes/portfolioRoutes";
 import adminRoutes from "./routes/adminRoutes";
+import contentRoutes from "./routes/contentRoutes";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use("/api/vault", vaultRoutes);
 app.use("/api/managers", managerRoutes);
 app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/content", contentRoutes);
 
 console.log("✅ Admin routes mounted at /api/admin");
 
