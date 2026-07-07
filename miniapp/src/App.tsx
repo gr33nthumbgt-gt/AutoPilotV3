@@ -46,12 +46,15 @@ export default function App() {
     "manager",
   ].includes(screen);
 
+  function openManager(manager: ManagerType) {
+    setSelectedManager(manager);
+    setScreen("manager");
+  }
+
   return (
     <main className="app">
       <div className="phone">
-        {screen === "welcome" && (
-          <Welcome next={() => setScreen("profileSetup")} />
-        )}
+        {screen === "welcome" && <Welcome next={() => setScreen("profileSetup")} />}
 
         {screen === "profileSetup" && (
           <ProfileSetup next={() => setScreen("walletSetup")} />
@@ -66,17 +69,13 @@ export default function App() {
         )}
 
         {screen === "home" && (
-          <Home activate={() => setScreen("activateVault")} />
-        )}
-
-        {screen === "discover" && (
-          <Discover
-            openManager={(manager) => {
-              setSelectedManager(manager);
-              setScreen("manager");
-            }}
+          <Home
+            activate={() => setScreen("activateVault")}
+            openManager={openManager}
           />
         )}
+
+        {screen === "discover" && <Discover openManager={openManager} />}
 
         {screen === "manager" && selectedManager && (
           <StrategyManager
@@ -87,17 +86,11 @@ export default function App() {
         )}
 
         {screen === "activity" && (
-          <Activity
-            manager={selectedManager}
-            back={() => setScreen("manager")}
-          />
+          <Activity manager={selectedManager} back={() => setScreen("manager")} />
         )}
 
         {screen === "copy" && (
-          <CopyStrategy
-            manager={selectedManager}
-            next={() => setScreen("portfolio")}
-          />
+          <CopyStrategy manager={selectedManager} next={() => setScreen("portfolio")} />
         )}
 
         {screen === "portfolio" && (
