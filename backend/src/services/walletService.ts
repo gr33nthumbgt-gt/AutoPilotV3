@@ -15,7 +15,7 @@ export async function getOrCreateWallet(telegramId: string) {
   return prisma.wallet.create({
     data: {
       investorId: investor.id,
-      balance: 5840,
+      balance: 0,
       currency: "USDT",
       connected: true,
     },
