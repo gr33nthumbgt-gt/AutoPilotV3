@@ -14,6 +14,8 @@ import Activity from "./pages/Activity";
 import CopyStrategy from "./pages/CopyStrategy";
 import Portfolio from "./pages/Portfolio";
 import ProfilePage from "./pages/ProfilePage";
+import Deposit from "./pages/Deposit";
+import Withdraw from "./pages/Withdraw";
 
 import type { StrategyManager as ManagerType } from "./types/manager";
 
@@ -28,7 +30,9 @@ type Screen =
   | "activity"
   | "copy"
   | "portfolio"
-  | "profilePage";
+  | "profilePage"
+  | "deposit"
+  | "withdraw";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("welcome");
@@ -44,6 +48,8 @@ export default function App() {
     "activity",
     "copy",
     "manager",
+    "deposit",
+    "withdraw",
   ].includes(screen);
 
   function openManager(manager: ManagerType) {
@@ -72,8 +78,14 @@ export default function App() {
           <Home
             activate={() => setScreen("activateVault")}
             openManager={openManager}
+            deposit={() => setScreen("deposit")}
+            withdraw={() => setScreen("withdraw")}
           />
         )}
+
+        {screen === "deposit" && <Deposit back={() => setScreen("home")} />}
+
+        {screen === "withdraw" && <Withdraw back={() => setScreen("home")} />}
 
         {screen === "discover" && <Discover openManager={openManager} />}
 

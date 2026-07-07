@@ -8,9 +8,13 @@ import type { StrategyManager } from "../types/manager";
 export default function Home({
   activate,
   openManager,
+  deposit,
+  withdraw,
 }: {
   activate: () => void;
   openManager: (manager: StrategyManager) => void;
+  deposit: () => void;
+  withdraw: () => void;
 }) {
   const [wallet, setWallet] = useState<any>(null);
   const [portfolio, setPortfolio] = useState<any>(null);
@@ -63,8 +67,10 @@ export default function Home({
       />
 
       <div className="actionGrid">
-        <button>Deposit</button>
-        <button className="secondary">Withdraw</button>
+        <button onClick={deposit}>Deposit</button>
+        <button className="secondary" onClick={withdraw}>
+          Withdraw
+        </button>
       </div>
 
       <div className="card">
