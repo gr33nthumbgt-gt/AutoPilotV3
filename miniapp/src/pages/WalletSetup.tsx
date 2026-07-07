@@ -3,7 +3,13 @@ import Screen from "../components/Screen";
 import BalanceCard from "../components/BalanceCard";
 import { getWallet } from "../services/api";
 
-export default function WalletSetup({ next }: { next: () => void }) {
+export default function WalletSetup({
+  next,
+  deposit,
+}: {
+  next: () => void;
+  deposit: () => void;
+}) {
   const [wallet, setWallet] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +21,12 @@ export default function WalletSetup({ next }: { next: () => void }) {
 
   const balance = Number(wallet?.balance ?? 0);
   const currency = wallet?.currency ?? "USDT";
+  const canCommit = balance >= 1000;
+
+  function handleContinue() {
+    if (canCommit) next();
+    else deposit();
+  }
 
   return (
     <Screen>
@@ -29,11 +41,13 @@ export default function WalletSetup({ next }: { next: () => void }) {
       )}
 
       <p className="text">
-        Fund your account before committing funds to an AutoPilot Vault.
+        {canCommit
+          ? "You have enough funds to commit to an AutoPilot Vault."
+          : "Fund your account before committing funds to an AutoPilot Vault."}
       </p>
 
-      <button onClick={next} disabled={loading}>
-        {loading ? "Please wait..." : "Continue"}
+      <button onClick={handleContinue} disabled={loading}>
+        {loading ? "Please wait..." : canCommit ? "Continue" : "Add Funds"}
       </button>
     </Screen>
   );

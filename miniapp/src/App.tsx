@@ -36,6 +36,7 @@ type Screen =
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("welcome");
+  const [depositBack, setDepositBack] = useState<Screen>("home");
   const [selectedManager, setSelectedManager] = useState<ManagerType | null>(null);
 
   const setPage = (page: Page) => setScreen(page);
@@ -57,6 +58,11 @@ export default function App() {
     setScreen("manager");
   }
 
+  function openDeposit(backTo: Screen) {
+    setDepositBack(backTo);
+    setScreen("deposit");
+  }
+
   return (
     <main className="app">
       <div className="phone">
@@ -67,7 +73,10 @@ export default function App() {
         )}
 
         {screen === "walletSetup" && (
-          <WalletSetup next={() => setScreen("activateVault")} />
+          <WalletSetup
+            next={() => setScreen("activateVault")}
+            deposit={() => openDeposit("walletSetup")}
+          />
         )}
 
         {screen === "activateVault" && (
@@ -78,12 +87,12 @@ export default function App() {
           <Home
             activate={() => setScreen("activateVault")}
             openManager={openManager}
-            deposit={() => setScreen("deposit")}
+            deposit={() => openDeposit("home")}
             withdraw={() => setScreen("withdraw")}
           />
         )}
 
-        {screen === "deposit" && <Deposit back={() => setScreen("home")} />}
+        {screen === "deposit" && <Deposit back={() => setScreen(depositBack)} />}
 
         {screen === "withdraw" && <Withdraw back={() => setScreen("home")} />}
 
