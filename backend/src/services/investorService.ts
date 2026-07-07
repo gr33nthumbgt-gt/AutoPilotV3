@@ -6,7 +6,7 @@ export async function loginInvestor(data: {
   firstName?: string;
   lastName?: string;
 }) {
-  return prisma.investor.upsert({
+  const investor = await prisma.investor.upsert({
     where: { telegramId: data.telegramId },
     update: {
       username: data.username || null,
@@ -20,11 +20,36 @@ export async function loginInvestor(data: {
       lastName: data.lastName || null,
     },
   });
+
+  await prisma.wallet.upsert({
+    where: { investorId: investor.id },
+    update: {},
+    create: {
+      investorId: investor.id,
+      balance: 0,
+      currency: "USDT",
+      connected: true,
+    },
+  });
+
+  return prisma.investor.findUnique({
+    where: { telegramId: data.telegramId },
+    include: {
+      wallet: true,
+      vault: true,
+      allocations: true,
+    },
+  });
 }
 
 export async function getInvestor(telegramId: string) {
   return prisma.investor.findUnique({
     where: { telegramId },
+    include: {
+      wallet: true,
+      vault: true,
+      allocations: true,
+    },
   });
 }
 
@@ -43,6 +68,11 @@ export async function updateInvestorProfile(
     data: {
       ...data,
       onboardingState: "PROFILE_CREATED",
+    },
+    include: {
+      wallet: true,
+      vault: true,
+      allocations: true,
     },
   });
 }
