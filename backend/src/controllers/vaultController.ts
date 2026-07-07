@@ -4,16 +4,19 @@ import { activateVault, getVault } from "../services/vaultService";
 export async function activate(req: Request, res: Response) {
   try {
     const telegramId = String(req.params.telegramId);
+    const amount = Number(req.body.amount);
 
-    const result = await activateVault(
-      telegramId,
-      Number(req.body.amount)
-    );
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ message: "Invalid vault amount" });
+    }
 
+    const result = await activateVault(telegramId, amount);
     res.json(result);
   } catch (error: any) {
-    res.status(500).json({
-      message: error.message || "Failed to activate vault",
+    const message = error.message || "Failed to activate vault";
+
+    res.status(message === "Insufficient wallet balance" ? 400 : 500).json({
+      message,
     });
   }
 }

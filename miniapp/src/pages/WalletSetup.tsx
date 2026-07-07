@@ -13,24 +13,27 @@ export default function WalletSetup({ next }: { next: () => void }) {
       .finally(() => setLoading(false));
   }, []);
 
+  const balance = Number(wallet?.balance ?? 0);
+  const currency = wallet?.currency ?? "USDT";
+
   return (
     <Screen>
-      <p className="eyebrow">Telegram Wallet</p>
-      <h1>{loading ? "Checking wallet..." : "Wallet found."}</h1>
+      <p className="eyebrow">Investment Account</p>
+      <h1>{loading ? "Checking wallet..." : "Wallet ready."}</h1>
 
       {wallet && (
         <BalanceCard
           label="Available Balance"
-          value={`${wallet.balance} ${wallet.currency}`}
+          value={`${balance} ${currency}`}
         />
       )}
 
       <p className="text">
-        Your funds stay in Telegram Wallet until you authorize a Vault allocation.
+        Fund your account before committing funds to an AutoPilot Vault.
       </p>
 
       <button onClick={next} disabled={loading}>
-        {loading ? "Please wait..." : "Choose amount"}
+        {loading ? "Please wait..." : "Continue"}
       </button>
     </Screen>
   );
