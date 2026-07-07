@@ -12,6 +12,7 @@ export default function CopyStrategy({
   next: () => void;
 }) {
   const [portfolio, setPortfolio] = useState<any>(null);
+  const [amount, setAmount] = useState("500");
   const [loading, setLoading] = useState(true);
   const [copying, setCopying] = useState(false);
 
@@ -21,12 +22,17 @@ export default function CopyStrategy({
       .finally(() => setLoading(false));
   }, []);
 
+  const numericAmount = Number(amount);
+  const available = Number(portfolio?.available ?? 0);
+  const currency = portfolio?.currency ?? "USDT";
+  const canCopy = manager && numericAmount > 0 && numericAmount <= available;
+
   async function handleCopy() {
-    if (!manager) return;
+    if (!manager || !canCopy) return;
 
     try {
       setCopying(true);
-      await copyStrategy(manager.id, 500);
+      await copyStrategy(manager.id, numericAmount);
       next();
     } catch (err) {
       alert("Copy failed.");
@@ -53,14 +59,31 @@ export default function CopyStrategy({
       <p className="text">Allocate funds from your AutoPilot Vault.</p>
 
       <div className="card">
-        <Row label="Vault Balance" value={`${portfolio.vault} ${portfolio.currency}`} />
-        <Row label="Currently Available" value={`${portfolio.available} ${portfolio.currency}`} />
-        <Row label="Allocation Amount" value={`500 ${portfolio.currency}`} />
+        <Row label="Vault Balance" value={`${portfolio?.vault ?? 0} ${currency}`} />
+        <Row label="Available" value={`${available} ${currency}`} />
         <Row label="Strategy" value={manager?.name || "Strategy"} />
       </div>
 
-      <button onClick={handleCopy} disabled={copying || !manager}>
-        {copying ? "Copying..." : "Allocate 500 USDT"}
+      <div className="card">
+        <p className="muted">Allocation Amount</p>
+        <input
+          className="telegramInput"
+          type="number"
+          min="1"
+          max={available}
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+
+        <p className="text">
+          {numericAmount > available
+            ? `You only have ${available} ${currency} available.`
+            : `You are allocating ${numericAmount || 0} ${currency}.`}
+        </p>
+      </div>
+
+      <button onClick={handleCopy} disabled={copying || !canCopy}>
+        {copying ? "Copying..." : `Copy ${manager?.name || "Strategy"}`}
       </button>
     </Screen>
   );

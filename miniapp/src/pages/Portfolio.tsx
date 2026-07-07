@@ -30,23 +30,28 @@ export default function Portfolio({ openActivity }: { openActivity: () => void }
     );
   }
 
+  const currency = portfolio?.currency ?? "USDT";
+  const allocations = portfolio?.allocations ?? [];
+
   return (
     <Screen>
       <p className="eyebrow">Portfolio</p>
-      <h1>Vault active.</h1>
+      <h1>{allocations.length > 0 ? "Portfolio active." : "No strategies yet."}</h1>
 
       <div className="card">
-        <Row label="Telegram Wallet" value={`${portfolio.wallet} ${portfolio.currency}`} />
-        <Row label="AutoPilot Vault" value={`${portfolio.vault} ${portfolio.currency}`} />
-        <Row label="Allocated" value={`${portfolio.allocated} ${portfolio.currency}`} />
-        <Row label="Available" value={`${portfolio.available} ${portfolio.currency}`} />
-        <Row label="Today" value={`+${portfolio.todayReturn} ${portfolio.currency}`} positive />
-        <Row label="Total Return" value={`+${portfolio.totalReturn} ${portfolio.currency}`} positive />
+        <Row label="Investment Wallet" value={`${portfolio.wallet} ${currency}`} />
+        <Row label="AutoPilot Vault" value={`${portfolio.vault} ${currency}`} />
+        <Row label="Allocated" value={`${portfolio.allocated} ${currency}`} />
+        <Row label="Available" value={`${portfolio.available} ${currency}`} />
+        <Row label="Today" value={`+${portfolio.todayReturn} ${currency}`} positive />
+        <Row label="Total Return" value={`+${portfolio.totalReturn} ${currency}`} positive />
       </div>
 
-      {portfolio.allocations?.length > 0 && (
+      {allocations.length > 0 ? (
         <div className="card">
-          {portfolio.allocations.map((allocation: any) => (
+          <p className="muted">Copied Strategies</p>
+
+          {allocations.map((allocation: any) => (
             <Row
               key={allocation.id}
               label={allocation.manager?.name || "Strategy"}
@@ -54,10 +59,16 @@ export default function Portfolio({ openActivity }: { openActivity: () => void }
             />
           ))}
         </div>
+      ) : (
+        <p className="text">
+          Copy a strategy manager to start building your portfolio.
+        </p>
       )}
 
       <button onClick={loadPortfolio}>Refresh Portfolio</button>
-      <button className="secondary" onClick={openActivity}>Open Activity</button>
+      <button className="secondary" onClick={openActivity}>
+        Open Activity
+      </button>
     </Screen>
   );
 }
