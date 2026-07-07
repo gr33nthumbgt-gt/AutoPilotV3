@@ -226,3 +226,21 @@ nav button {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+.heroCard h2 {
+  font-size: 34px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.linkButton {
+  background: transparent;
+  color: #5aa7ff;
+  padding: 0;
+  width: auto;
+}

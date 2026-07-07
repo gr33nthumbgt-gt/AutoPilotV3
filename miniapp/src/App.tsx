@@ -89,13 +89,12 @@ export default function App() {
             openManager={openManager}
             deposit={() => openDeposit("home")}
             withdraw={() => setScreen("withdraw")}
+            browseManagers={() => setScreen("discover")}
           />
         )}
 
         {screen === "deposit" && <Deposit back={() => setScreen(depositBack)} />}
-
         {screen === "withdraw" && <Withdraw back={() => setScreen("home")} />}
-
         {screen === "discover" && <Discover openManager={openManager} />}
 
         {screen === "manager" && selectedManager && (
