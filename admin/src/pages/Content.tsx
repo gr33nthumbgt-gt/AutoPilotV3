@@ -28,7 +28,7 @@ export default function Content() {
 
   useEffect(() => {
     getContent().then((items) => {
-      const loaded = { ...defaultContent };
+      const loaded: Record<string, string> = { ...defaultContent };
 
       items.forEach((item: any) => {
         loaded[item.key] = item.value;
