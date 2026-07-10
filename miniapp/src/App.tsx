@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles.css";
 
 import BottomNav, { type Page } from "./components/BottomNav";
@@ -16,10 +16,13 @@ import Portfolio from "./pages/Portfolio";
 import ProfilePage from "./pages/ProfilePage";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
+import Screen from "./components/Screen";
 
+import { loginInvestor } from "./services/api";
 import type { StrategyManager as ManagerType } from "./types/manager";
 
-type Screen =
+type ScreenName =
+  | "launching"
   | "welcome"
   | "profileSetup"
   | "walletSetup"
@@ -35,13 +38,40 @@ type Screen =
   | "withdraw";
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("welcome");
-  const [depositBack, setDepositBack] = useState<Screen>("home");
+  const [screen, setScreen] = useState<ScreenName>("launching");
+  const [depositBack, setDepositBack] = useState<ScreenName>("home");
   const [selectedManager, setSelectedManager] = useState<ManagerType | null>(null);
+
+  useEffect(() => {
+    async function launch() {
+      try {
+        const investor = await loginInvestor();
+        setScreen(resolveLaunchScreen(investor));
+      } catch (error) {
+        console.error(error);
+        setScreen("welcome");
+      }
+    }
+
+    launch();
+  }, []);
+
+  function resolveLaunchScreen(investor: any): ScreenName {
+    const profileComplete = investor?.onboardingState === "PROFILE_CREATED";
+    const walletBalance = Number(investor?.wallet?.balance ?? 0);
+    const vaultBalance = Number(investor?.vault?.balance ?? 0);
+    const vaultActive = investor?.vault?.status === "ACTIVE" && vaultBalance > 0;
+
+    if (!profileComplete) return "welcome";
+    if (vaultActive) return "home";
+    if (walletBalance >= 1000) return "activateVault";
+    return "walletSetup";
+  }
 
   const setPage = (page: Page) => setScreen(page);
 
   const showNav = ![
+    "launching",
     "welcome",
     "profileSetup",
     "walletSetup",
@@ -58,7 +88,7 @@ export default function App() {
     setScreen("manager");
   }
 
-  function openDeposit(backTo: Screen) {
+  function openDeposit(backTo: ScreenName) {
     setDepositBack(backTo);
     setScreen("deposit");
   }
@@ -66,6 +96,13 @@ export default function App() {
   return (
     <main className="app">
       <div className="phone">
+        {screen === "launching" && (
+          <Screen>
+            <p className="eyebrow">AutoPilot</p>
+            <h1>Opening your account...</h1>
+          </Screen>
+        )}
+
         {screen === "welcome" && <Welcome next={() => setScreen("profileSetup")} />}
 
         {screen === "profileSetup" && (
@@ -94,7 +131,9 @@ export default function App() {
         )}
 
         {screen === "deposit" && <Deposit back={() => setScreen(depositBack)} />}
+
         {screen === "withdraw" && <Withdraw back={() => setScreen("home")} />}
+
         {screen === "discover" && <Discover openManager={openManager} />}
 
         {screen === "manager" && selectedManager && (

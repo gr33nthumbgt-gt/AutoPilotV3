@@ -56,17 +56,17 @@ export async function getInvestor(telegramId: string) {
 export async function updateInvestorProfile(
   telegramId: string,
   data: {
-    firstName?: string;
     phone?: string;
     email?: string;
-    city?: string;
-    gender?: string;
+    country?: string;
   }
 ) {
   return prisma.investor.update({
     where: { telegramId },
     data: {
-      ...data,
+      phone: data.phone,
+      email: data.email,
+      country: data.country,
       onboardingState: "PROFILE_CREATED",
     },
     include: {

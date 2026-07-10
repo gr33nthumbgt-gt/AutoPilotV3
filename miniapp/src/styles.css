@@ -244,3 +244,58 @@ nav button {
   padding: 0;
   width: auto;
 }
+
+.phoneRow {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.countryCode {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 18px 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.countrySelectWrap {
+  display: grid;
+  gap: 8px;
+}
+
+.countrySelectWrap label {
+  color: #9fb1c7;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.countrySelect {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.phoneRow {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.countryCode {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 18px 14px;
+  font-weight: 900;
+  text-align: center;
+}

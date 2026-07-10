@@ -1,69 +1,56 @@
 import { useState } from "react";
 import Screen from "../components/Screen";
-import { updateInvestorProfile } from "../services/api";
+import { getTelegramUser, updateInvestorProfile } from "../services/api";
+
+const countries = [
+  { name: "Nigeria", code: "+234" },
+  { name: "United States", code: "+1" },
+  { name: "United Kingdom", code: "+44" },
+  { name: "Canada", code: "+1" },
+  { name: "United Arab Emirates", code: "+971" },
+  { name: "Ghana", code: "+233" },
+  { name: "South Africa", code: "+27" },
+  { name: "Kenya", code: "+254" },
+  { name: "Uganda", code: "+256" },
+  { name: "India", code: "+91" },
+  { name: "China", code: "+86" },
+  { name: "Germany", code: "+49" },
+  { name: "France", code: "+33" },
+  { name: "Spain", code: "+34" },
+  { name: "Italy", code: "+39" },
+  { name: "Australia", code: "+61" },
+  { name: "Brazil", code: "+55" },
+  { name: "Mexico", code: "+52" },
+];
 
 export default function ProfileSetup({ next }: { next: () => void }) {
-  const [step, setStep] = useState(0);
-  const [value, setValue] = useState("");
+  const tgUser = getTelegramUser();
+
+  const [email, setEmail] = useState("");
+  const [countryName, setCountryName] = useState("Nigeria");
+  const [phone, setPhone] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const fields = [
-    { key: "firstName", label: "Hi, what should we call you?", placeholder: "Your name", type: "text" },
-    { key: "phone", label: "What’s your phone number?", placeholder: "Phone number", type: "tel" },
-    { key: "email", label: "What’s your email?", placeholder: "Email address", type: "email" },
-    { key: "city", label: "What city are you in?", placeholder: "Current city", type: "text" },
-    { key: "gender", label: "What’s your gender?", placeholder: "Gender", type: "text" },
-  ];
+  const country = countries.find((item) => item.name === countryName) || countries[0];
+  const cleanPhone = phone.replace(/\D/g, "");
+  const fullPhone = `${country.code}${cleanPhone}`;
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const validPhone = cleanPhone.length >= 7;
+  const canContinue = validEmail && validPhone;
 
-  const current = fields[step];
-
-  function validate(key: string, input: string) {
-    const v = input.trim();
-
-    if (!v) return "This field is required.";
-
-    if (key === "firstName" && !/^[A-Za-z\s'-]{2,40}$/.test(v)) {
-      return "Enter a valid name.";
-    }
-
-    if (key === "phone" && !/^\+?[0-9\s-]{7,20}$/.test(v)) {
-      return "Enter a valid phone number.";
-    }
-
-    if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
-      return "Enter a valid email address.";
-    }
-
-    if (key === "city" && !/^[A-Za-z\s'-]{2,60}$/.test(v)) {
-      return "Enter a valid city.";
-    }
-
-    if (key === "gender" && !/^[A-Za-z\s'-]{2,30}$/.test(v)) {
-      return "Enter a valid gender.";
-    }
-
-    return "";
-  }
-
-  async function handleNext() {
-    const error = validate(current.key, value);
-    if (error) {
-      alert(error);
-      return;
-    }
+  async function handleContinue() {
+    if (!canContinue) return;
 
     try {
       setSaving(true);
       await updateInvestorProfile({
-        [current.key]: value.trim(),
+        email: email.trim(),
+        phone: fullPhone,
+        country: country.name,
       });
-
-      setValue("");
-
-      if (step < fields.length - 1) setStep(step + 1);
-      else next();
+      next();
     } catch (error) {
-      alert("Could not save profile.");
+      alert("Could not save contact details.");
       console.error(error);
     } finally {
       setSaving(false);
@@ -73,26 +60,54 @@ export default function ProfileSetup({ next }: { next: () => void }) {
   return (
     <Screen>
       <p className="eyebrow">Investor Setup</p>
+      <h1>Confirm contact details.</h1>
 
-      <div className="setupBubble">
-        <h1>{current.label}</h1>
-        <p>
-          {step === 0
-            ? "We’ll walk you through your setup."
-            : "Just a few details to complete your profile."}
-        </p>
+      <div className="card">
+        <p className="muted">Telegram Profile</p>
+        <h2>{tgUser.firstName} {tgUser.lastName}</h2>
+        <p className="text">@{tgUser.username}</p>
       </div>
 
       <input
         className="telegramInput"
-        type={current.type}
-        placeholder={current.placeholder}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        placeholder="Email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
-      <button onClick={handleNext} disabled={saving}>
-        {saving ? "Saving..." : step < fields.length - 1 ? "Continue" : "Finish setup"}
+      <div className="countrySelectWrap">
+        <label>Country</label>
+        <select
+          className="countrySelect"
+          value={countryName}
+          onChange={(e) => setCountryName(e.target.value)}
+        >
+          {countries.map((item) => (
+            <option key={`${item.name}-${item.code}`} value={item.name}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="phoneRow">
+        <div className="countryCode">{country.code}</div>
+
+        <input
+          className="telegramInput"
+          placeholder="Phone number"
+          inputMode="numeric"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+        />
+      </div>
+
+      <p className="text">
+        We use this for funding confirmations, withdrawal support, and account updates.
+      </p>
+
+      <button onClick={handleContinue} disabled={!canContinue || saving}>
+        {saving ? "Saving..." : "Continue"}
       </button>
     </Screen>
   );
