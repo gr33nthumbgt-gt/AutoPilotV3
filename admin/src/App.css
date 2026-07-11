@@ -109,3 +109,334 @@ button {
 .danger {
   background: #ff4d4d;
 }
+
+.adminPage {
+  display: grid;
+  gap: 24px;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.pageHeader h1 {
+  margin: 4px 0 8px;
+}
+
+.adminEyebrow {
+  margin: 0;
+  color: #63ffa7;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pageDescription {
+  max-width: 680px;
+  margin: 0;
+  color: #9fb1c7;
+  line-height: 1.6;
+}
+
+.depositSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.adminCard,
+.adminPanel {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+}
+
+.adminCard {
+  padding: 20px;
+}
+
+.adminCard p {
+  margin: 0 0 10px;
+  color: #9fb1c7;
+}
+
+.adminCard strong {
+  font-size: 28px;
+}
+
+.adminPanel {
+  padding: 20px;
+}
+
+.depositToolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.depositFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filterButton,
+.tableActionButton,
+.adminPrimaryButton,
+.adminSecondaryButton,
+.adminDangerButton,
+.modalCloseButton {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.filterButton {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #9fb1c7;
+}
+
+.filterButton.active {
+  background: #2f8cff;
+  color: white;
+}
+
+.reviewerField,
+.depositNoteField {
+  display: grid;
+  gap: 8px;
+  color: #9fb1c7;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.reviewerField input,
+.depositNoteField textarea {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font: inherit;
+}
+
+.reviewerField input {
+  min-width: 220px;
+  padding: 12px 14px;
+}
+
+.depositNoteField textarea {
+  min-height: 120px;
+  padding: 14px;
+  resize: vertical;
+}
+
+.depositTableWrap {
+  overflow-x: auto;
+}
+
+.depositTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.depositTable th,
+.depositTable td {
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.depositTable th {
+  color: #9fb1c7;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.depositTable td small {
+  display: block;
+  margin-top: 5px;
+  color: #9fb1c7;
+}
+
+.depositTable code {
+  color: #c9d7e8;
+}
+
+.statusBadge {
+  display: inline-flex;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.statusBadge.pending {
+  background: rgba(255, 189, 46, 0.15);
+  color: #ffca55;
+}
+
+.statusBadge.approved {
+  background: rgba(99, 255, 167, 0.15);
+  color: #63ffa7;
+}
+
+.statusBadge.rejected {
+  background: rgba(255, 92, 92, 0.15);
+  color: #ff7777;
+}
+
+.tableActionButton {
+  padding: 9px 13px;
+  border-radius: 12px;
+  background: rgba(47, 140, 255, 0.16);
+  color: #75b4ff;
+}
+
+.adminPrimaryButton,
+.adminSecondaryButton,
+.adminDangerButton {
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+
+.adminPrimaryButton {
+  background: #2f8cff;
+  color: white;
+}
+
+.adminSecondaryButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.adminDangerButton {
+  background: rgba(255, 92, 92, 0.16);
+  color: #ff7777;
+}
+
+.adminPrimaryButton:disabled,
+.adminSecondaryButton:disabled,
+.adminDangerButton:disabled,
+.tableActionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.adminError {
+  margin-bottom: 16px;
+  padding: 13px 15px;
+  border: 1px solid rgba(255, 92, 92, 0.25);
+  border-radius: 14px;
+  background: rgba(255, 92, 92, 0.1);
+  color: #ff8d8d;
+}
+
+.adminEmptyState {
+  padding: 50px 20px;
+  color: #9fb1c7;
+  text-align: center;
+}
+
+.adminModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.adminModal {
+  width: min(620px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  background: #101b2b;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.modalHeader h2 {
+  margin: 5px 0 0;
+}
+
+.modalCloseButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 24px;
+}
+
+.depositDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.depositDetails div {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.depositDetails span {
+  color: #9fb1c7;
+  font-size: 12px;
+}
+
+.depositReviewActions {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.fullWidth {
+  width: 100%;
+  margin-top: 20px;
+}
+
+@media (max-width: 760px) {
+  .pageHeader,
+  .depositToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .depositSummaryGrid,
+  .depositDetails,
+  .depositReviewActions {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewerField input {
+    min-width: 0;
+    width: 100%;
+  }
+}
