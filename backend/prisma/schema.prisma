@@ -1,11 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Investor {
@@ -23,36 +24,37 @@ model Investor {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  wallet          Wallet?
-  vault           Vault?
-  allocations     Allocation[]
-  snapshots       PortfolioSnapshot[]
+  wallet      Wallet?
+  vault       Vault?
+  allocations Allocation[]
+  snapshots   PortfolioSnapshot[]
+  deposits    DepositRequest[]
 }
 
 model Wallet {
-  id          Int      @id @default(autoincrement())
-  investorId  Int      @unique
-  balance     Float    @default(5840)
-  currency    String   @default("USDT")
-  connected   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  investorId Int      @unique
+  balance    Float    @default(0)
+  currency   String   @default("USDT")
+  connected  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  investor    Investor @relation(fields: [investorId], references: [id])
+  investor Investor @relation(fields: [investorId], references: [id])
 }
 
 model Vault {
-  id          Int      @id @default(autoincrement())
-  investorId  Int      @unique
-  balance     Float    @default(0)
-  allocated   Float    @default(0)
-  available   Float    @default(0)
-  currency    String   @default("USDT")
-  status      String   @default("INACTIVE")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  investorId Int      @unique
+  balance    Float    @default(0)
+  allocated  Float    @default(0)
+  available  Float    @default(0)
+  currency   String   @default("USDT")
+  status     String   @default("INACTIVE")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  investor    Investor @relation(fields: [investorId], references: [id])
+  investor Investor @relation(fields: [investorId], references: [id])
 }
 
 model StrategyManager {
@@ -74,17 +76,17 @@ model StrategyManager {
 }
 
 model Allocation {
-  id          Int      @id @default(autoincrement())
-  investorId  Int
-  managerId   Int
-  amount      Float
-  currency    String   @default("USDT")
-  status      String   @default("ACTIVE")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  investorId Int
+  managerId  Int
+  amount     Float
+  currency   String   @default("USDT")
+  status     String   @default("ACTIVE")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  investor    Investor @relation(fields: [investorId], references: [id])
-  manager     StrategyManager @relation(fields: [managerId], references: [id])
+  investor Investor        @relation(fields: [investorId], references: [id])
+  manager  StrategyManager @relation(fields: [managerId], references: [id])
 }
 
 model PortfolioSnapshot {
@@ -99,7 +101,30 @@ model PortfolioSnapshot {
   currency    String   @default("USDT")
   createdAt   DateTime @default(now())
 
-  investor    Investor @relation(fields: [investorId], references: [id])
+  investor Investor @relation(fields: [investorId], references: [id])
+}
+
+model DepositRequest {
+  id          Int       @id @default(autoincrement())
+  reference   String    @unique @default(cuid())
+  investorId  Int
+  amount      Float
+  currency    String    @default("USDT")
+  method      String    @default("MANUAL")
+  status      String    @default("PENDING")
+  externalRef String?   @unique
+  note        String?
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  creditedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  investor Investor @relation(fields: [investorId], references: [id])
+
+  @@index([investorId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model AdminSetting {
